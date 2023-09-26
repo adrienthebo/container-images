@@ -1,0 +1,19 @@
+{
+  "apiVersion": "v1",
+  "spec": {
+    "containers": [
+      {
+        "name": "kaniko",
+        "image": "gcr.io/kaniko-project/executor:latest",
+        "stdin": true,
+        "stdinOnce": true,
+        "args": [
+          "--dockerfile=Dockerfile",
+          "--context=tar://stdin",
+          "--destination=${DESTINATION}",
+          "--cache=true"
+        ]
+      }
+    ]
+  }
+}
