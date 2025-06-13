@@ -8,13 +8,10 @@
         "stdin": true,
         "stdinOnce": true,
         "args": [
-          "--build-arg=FEDORA_VERSION=${FEDORA_VERSION}",
           "--dockerfile=Dockerfile",
           "--context=tar://stdin",
           "--destination=${DESTINATION}",
-          "--cache=true",
-	  "--use-new-run=true",
-	  "--snapshot-mode=redo"
+          "--cache=true"
         ]
       }
     ]

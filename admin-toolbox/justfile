@@ -1,0 +1,25 @@
+set export
+set shell := ["bash", "-uc"]
+
+BUILD_NAMESPACE := "default"
+
+REGISTRY := "trow.laurel.lagrange-automation.io"
+REPOSITORY := "admin-toolbox"
+TAG := "38.0.0-dev.2"
+ARCH := "aarch64"
+DESTINATION := REGISTRY / REPOSITORY + ":" + TAG + "-" + ARCH
+
+FEDORA_VERSION := "38"
+
+echo:
+	env | grep DESTINATION
+	echo $(envsubst < ../kaniko-overrides.tmpl.json) | jq
+
+build:
+	tar -cf - Dockerfile files | gzip -9 | \
+	kubectl run kaniko \
+	  --namespace {{BUILD_NAMESPACE}} \
+	  --rm --stdin=true \
+	  --image=gcr.io/kaniko-project/executor:latest --restart=Never \
+	  --overrides="$(envsubst < kaniko-overrides.tmpl.json)"
+
