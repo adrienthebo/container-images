@@ -7,9 +7,18 @@ LABEL com.github.containers.toolbox="true" \
       summary="Base image for creating Raspberry Pi OS Toolbx containers" \
       maintainer="/dev/null"
 
-# Remove apt configuration optimized for containers
-# Remove docker-gzip-indexes to help with "command-not-found"
-#RUN rm /etc/apt/apt.conf.d/docker-gzip-indexes /etc/apt/apt.conf.d/docker-no-languages
+COPY extra-packages /
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install unminimize && \
+    sed -Ei '/apt-get (update|upgrade)/s/^/#/' /usr/bin/unminimize && \
+    yes | /usr/bin/unminimize && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+        ubuntu-minimal ubuntu-standard \
+        libnss-myhostname \
+        flatpak-xdg-utils \
+        $(cat extra-packages | xargs) && \
+    rm -rd /var/lib/apt/lists/*
+RUN rm /extra-packages
 
 # Enable myhostname nss plugin for clean hostname resolution without patching
 # hosts (at least for sudo), add it right after 'files' entry. We expect that
