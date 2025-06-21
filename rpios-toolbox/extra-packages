@@ -7,3 +7,8 @@ tree
 unzip
 zip
 zsh
+libcap2-bin
+man-db
+iproute2
+lshw
+usbutils

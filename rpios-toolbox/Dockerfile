@@ -9,13 +9,8 @@ LABEL com.github.containers.toolbox="true" \
 
 COPY extra-packages /
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install unminimize && \
-    sed -Ei '/apt-get (update|upgrade)/s/^/#/' /usr/bin/unminimize && \
-    yes | /usr/bin/unminimize && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install \
-        ubuntu-minimal ubuntu-standard \
         libnss-myhostname \
-        flatpak-xdg-utils \
         $(cat extra-packages | xargs) && \
     rm -rd /var/lib/apt/lists/*
 RUN rm /extra-packages
@@ -25,22 +20,6 @@ RUN rm /extra-packages
 # this entry is not present yet. Do this early so that package postinst (which
 # adds it too late in the order) skips this step
 RUN sed -Ei 's/^(hosts:.*)(\<files\>)\s*(.*)/\1\2 myhostname \3/' /etc/nsswitch.conf
-
-# Restore documentation but do not upgrade all packages
-# Install ubuntu-minimal & ubuntu-standard
-# Install extra packages as well as libnss-myhostname
-#COPY extra-packages /
-#RUN apt-get update && \
-#    DEBIAN_FRONTEND=noninteractive apt-get -y install unminimize && \
-#    sed -Ei '/apt-get (update|upgrade)/s/^/#/' /usr/bin/unminimize && \
-#    yes | /usr/bin/unminimize && \
-#    DEBIAN_FRONTEND=noninteractive apt-get -y install \
-#        ubuntu-minimal ubuntu-standard \
-#        libnss-myhostname \
-#        flatpak-xdg-utils \
-#        $(cat extra-packages | xargs) && \
-#    rm -rd /var/lib/apt/lists/*
-#RUN rm /extra-packages
 
 # Enable the use of p11-kit-client.so to access CA certificates from the host
 RUN mkdir --parents /etc/pkcs11/modules
