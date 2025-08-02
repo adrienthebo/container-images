@@ -32,12 +32,16 @@ RUN dnf install -y \
 	neovim \
 	parted \
 	pciutils \
+  usbutils \
 	rsync \
+  rclone \
 	screen \
 	sysstat \
 	tmux \
 	zsh \
 	bind-utils \
+  dmidecode \
+  smartmontools \
 	;
 
 RUN mkdir -p /root/.config/bottom
